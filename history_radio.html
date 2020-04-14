@@ -33,8 +33,16 @@
     <!-- firebase 관련 함수 불러오기 -->
 
     <style>
+        #section-history .history_legend .elites_i {
+            z-index: 1000;
+        }
+
         #section-history .history_legend input[type=radio] {
+            width: 100%;
+            height: 100%;
             display: none;
+            cursor: pointer;
+            z-index: 1;
         }
     </style>
     <script>
@@ -55,76 +63,84 @@
             var docColl = firestore.collection("arts");
             var docCollectionbyYear = docRef.collection("1900");
 
-            /* 데이터 불러오기 */
-            function loadDataFromCollection() {
+            var collapsibleContent = "";
 
+            function test() {
+                console.log(docRef);
+            }
+            test();
+            /* 데이터 불러오기 */
+            function loadDataFromCollection(year) {
+                // console.log(year);
                 //+
-                docCollectionbyYear
-                    // .orderBy("year", "desc")
+                var historyHtml = "";
+                docColl
+                    .orderBy("year", "desc")
                     .get()
                     .then(function (querySnapshot) {
-                        console.log(querySnapshot);
+                        // console.log(querySnapshot);
                         //get()일단 싹 긁어옴, querySnapshot(firebase에서 전달해주는 역할, 이 안에 데이터들이 다 들어있다 )
-
+                        console.log(querySnapshot);
                         var html = "";
                         //+
-                        var historyHtml = "";
+                        // var historyHtml = "";
 
                         //버튼 저장할때 이름, add할때 이름, 업데이트할때 이름, 즉 보라색 이름이 대소문자 같아야 로드할 수 있음
                         //add -> description: desc
                         //data-뒤에잇는이름 , 헷갈리니까 그냥 이름 전체 통일
                         querySnapshot.forEach(function (doc) {
-                            let group = doc.data().group;
+                            // let group = doc.data().group;
+                            // console.log(group);
                             // console.log(group.split(","));
-                            html += `<tr>
-                <th scope="row">${doc.id}</th>
-                <td>${doc.data().name}</td>
-                <td>${doc.data().description}</td>
-                <td>${doc.data().quote}</td>
-                <td>${doc.data().sentiment}</td>
-                <td>${doc.data().image}</td>
-                <td>${doc.data().group}</td>
-                <td>${doc.data().movement}</td>
-                <td>${doc.data().ideologie}</td>
-                
-                
-                <td><button type="button" class="btn btn-success btn-sm class="btn btn-primary mt-3 mb-3" data-id=${doc.id} data-name="${doc.data().name}" data-description="${doc.data().description}" data-quote="${doc.data().quote}" data-sentiment="${doc.data().sentiment}" data-image="${doc.data().image}" data-group="${doc.data().group}" data-movement="${doc.data().movement}" data-ideologie="${doc.data().ideologie}" data-toggle="modal" data-target="#exampleModalUpdate">Update</button>
+                            //                 html += `<tr>
+                            //     <th scope="row">${doc.id}</th>
+                            //     <td>${doc.data().name}</td>
+                            //     <td>${doc.data().description}</td>
+                            //     <td>${doc.data().quote}</td>
+                            //     <td>${doc.data().sentiment}</td>
+                            //     <td>${doc.data().image}</td>
+                            //     <td>${doc.data().group}</td>
+                            //     <td>${doc.data().movement}</td>
+                            //     <td>${doc.data().ideologie}</td>
 
-                <button type="button" class="btn btn-danger btn-sm deleteItem" data-id=${doc.id}>Delete</button></td>
-    
-            </tr>`;
+
+                            //     <td><button type="button" class="btn btn-success btn-sm class="btn btn-primary mt-3 mb-3" data-id=${doc.id} data-name="${doc.data().name}" data-description="${doc.data().description}" data-quote="${doc.data().quote}" data-sentiment="${doc.data().sentiment}" data-image="${doc.data().image}" data-group="${doc.data().group}" data-movement="${doc.data().movement}" data-ideologie="${doc.data().ideologie}" data-toggle="modal" data-target="#exampleModalUpdate">Update</button>
+
+                            //     <button type="button" class="btn btn-danger btn-sm deleteItem" data-id=${doc.id}>Delete</button></td>
+
+                            // </tr>`;
 
                             historyHtml +=
                                 `<button class="collapsible ${doc.data().group && doc.data().group.join(" ")} ${doc.data().movement && doc.data().movement.join(" ")} ${doc.data().ideologie && doc.data().ideologie.join(" ")}">${doc.data().name}</button>
-            <div class="content">
-            <p>${doc.data().description}</p>
-            <p>${doc.data().quote}</p>
-            </div>`;
-
-                            console.log(doc.id);
+                                <div class="content">
+                                <p>${doc.data().description}</p>
+                                <p>${doc.data().quote}</p>
+                                </div>`;
+                            // console.log(historyHtml);
+                            console.log(doc);
                         })
+                        // $('.table tbody').html(html);
+                        // $('#collapsibleContent').html(historyHtml);
+                        // var coll = document.getElementsByClassName("collapsible");
 
-
-
-                        $('.table tbody').html(html);
-                        $('#collapsibleContent').html(historyHtml);
-                        var coll = document.getElementsByClassName("collapsible");
-
-                        for (var i = 0; i < coll.length; i++) {
-                            coll[i].addEventListener("click", function () {
-                                this.classList.toggle("active");
-                                var content = this.nextElementSibling;
-                                if (content.style.maxHeight) {
-                                    content.style.maxHeight = null;
-                                } else {
-                                    content.style.maxHeight = content.scrollHeight + "px";
-                                }
-                            });
-                        }
-                    })
+                        // for (var i = 0; i < coll.length; i++) {
+                        //     coll[i].addEventListener("click", function () {
+                        //         this.classList.toggle("active");
+                        //         var content = this.nextElementSibling;
+                        //         if (content.style.maxHeight) {
+                        //             content.style.maxHeight = null;
+                        //         } else {
+                        //             content.style.maxHeight = content.scrollHeight + "px";
+                        //         }
+                        //     });
+                        // }
+                    }).catch(function (e) { console.log(e) });
             }
-
-            loadDataFromCollection();
+            // 1900 1914 1917 1918 1919 1920 1925 1926 1927 1930 1931 1932 1939-1945 1940 1944 1945 1950 1959
+            ['1900', '1914', '1917', '1918', '1919', '1920', '1925', '1926', '1927', '1930', '1931', '1932', '1939-1945', '1940', '1944', '1945', '1950', '1959'].forEach(function (year) {
+                // loadDataFromCollection(year);
+                // collapsibleContent += loadDataFromCollection(year);
+            });
             /* 데이터 불러오기 */
 
         }
@@ -206,17 +222,30 @@
                             <span class="elites_i">
 
                                 <input type="radio" name="toggles" value="ELITES" id="toggle1" /><label for="toggle1"
-                                    class="i_des i_des_1">MORALISTS, ELITES, CULTURAL PESSIMISTS</label>
+                                    class="">&nbsp;</label>
+                                <span class="labelSpan">
+                                    MORALISTS, ELITES, CULTURAL PESSIMISTS
+                                </span>
 
                             </span>
 
                             <span class="clergy_i">
-                                <span class="i_des i_des_2">
+                                <!-- <span class="i_des i_des_2">
+                                    clergy, minister, religious authorities
+                                </span> -->
+                                <input type="radio" name="toggles" value="ELITES" id="toggle2" /><label for="toggle2"
+                                    class="clergy_i"></label>
+                                <span class="labelSpan">
                                     clergy, minister, religious authorities
                                 </span>
                             </span>
                             <span class="govern_i">
-                                <span class="i_des i_des_3">
+                                <!-- <span class="i_des i_des_3">
+                                    government
+                                </span> -->
+                                <input type="radio" name="toggles" value="ELITES" id="toggle3" /><label for="toggle3"
+                                    class="govern_i"></label>
+                                <span class="labelSpan">
                                     government
                                 </span>
                             </span>
@@ -280,7 +309,7 @@
     </main>
     <script>
         $('.elites_i').click(function () {
-            console.log($(this).children('input').attr('checked', true));
+            console.log($(this).find('input[type=radio]:checked').val());
         });
     </script>
 </body>
