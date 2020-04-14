@@ -882,7 +882,7 @@ iframe {
 }
 
 /*history_left*/
-.elites {
+.e {
   position: absolute;
   top: 7rem;
   /*    숫자가 클수록 년도를 의미*/
@@ -999,7 +999,7 @@ input[type="radio"] + label {
 
 #section-history
   .history_legend
-  input[type="radio"]
+  input[type="radio"]:checked
   + label.clergy_i:hover
   ~ .labelSpan {
   display: block;
